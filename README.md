@@ -1,25 +1,35 @@
-# 📸 EcoSnap - Community-Powered Waste Detection & Reporting System
+# 📸 EcoSnap - Community-Powered Waste Detection & Management Platform
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D14.0.0-brightgreen)](https://nodejs.org/)
 [![React Version](https://img.shields.io/badge/react-18.2.0-blue)](https://reactjs.org/)
 
-EcoSnap is a full-stack civic-tech platform that empowers communities to report and track waste management issues through geo-tagged photo reports, interactive mapping, and gamified community engagement.
+EcoSnap is a comprehensive two-sided civic-tech platform that connects communities with professional cleaning organizations. Citizens report waste issues through geo-tagged photos, while cleaning companies receive work orders, manage teams, and get compensated for cleanup services.
 
 ## 🌟 Features
 
-### 👥 User Features
+### 👥 Citizen Features
 - **📱 Easy Reporting**: Upload geo-tagged photos of waste issues with detailed descriptions
 - **🗺️ Interactive Map**: View all reports on an interactive map with filters and clustering
 - **🎯 Geolocation**: Automatic location detection or manual pin placement
 - **🏆 Green Points System**: Earn points for valid reports and cleanup confirmations
 - **📊 Community Stats**: Track local cleanliness scores and top contributors
+- **🔔 Notifications**: Get updates on reported issues and cleanup progress
 
-### 👨‍💼 Admin Features
-- **📋 Report Management**: Review, verify, and update report statuses
+### 🏢 Cleaning Organization Features
+- **📋 Work Order Management**: Receive and manage cleanup assignments from verified reports
+- **👷 Team Management**: Assign tasks to cleaning teams and track progress
+- **💰 Payment System**: Track earnings and manage invoicing for completed work
+- **📱 Mobile App**: Field teams can update job status and upload completion photos
+- **📈 Business Dashboard**: View earnings, performance metrics, and service areas
+- **⭐ Rating System**: Build reputation through customer feedback and completion rates
+
+### 🏛️ Municipal/Admin Features
+- **📋 Report Management**: Review, verify, and assign reports to cleaning organizations
 - **📈 Analytics Dashboard**: View comprehensive statistics and trends
-- **📤 Data Export**: Export reports and analytics data
-- **👥 User Management**: Manage user accounts and permissions
+- **💳 Payment Processing**: Manage payments to cleaning organizations
+- **👥 User Management**: Manage citizen and organization accounts
+- **🏆 Gamification**: Set up reward systems and community challenges
 
 ## 🏗️ Architecture
 
