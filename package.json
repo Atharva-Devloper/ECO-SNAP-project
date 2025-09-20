@@ -1,0 +1,50 @@
+{
+  "name": "ecosnap-waste-detection",
+  "version": "1.0.0",
+  "description": "Community-Powered Waste Detection & Reporting System - A full-stack civic-tech platform for reporting and tracking waste management issues",
+  "main": "index.js",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "install:client": "cd client && npm install",
+    "install:server": "cd server && npm install",
+    "install:all": "npm run install:client && npm run install:server",
+    "dev": "concurrently \"npm run server:dev\" \"npm run client:dev\"",
+    "server:dev": "cd server && npm run dev",
+    "client:dev": "cd client && npm start",
+    "build": "cd client && npm run build",
+    "test": "npm run test:client && npm run test:server",
+    "test:client": "cd client && npm test",
+    "test:server": "cd server && npm test",
+    "lint": "npm run lint:client && npm run lint:server",
+    "lint:client": "cd client && npm run lint",
+    "lint:server": "cd server && npm run lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/ecosnap-waste-detection.git"
+  },
+  "keywords": [
+    "waste-management",
+    "civic-tech",
+    "environmental",
+    "community",
+    "reporting",
+    "react",
+    "nodejs",
+    "mongodb",
+    "geolocation",
+    "mapping"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  }
+}
