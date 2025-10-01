@@ -1,5 +1,4 @@
 const express = require('express');
-const passport = require('passport');
 const {
   register,
   login,
@@ -8,8 +7,7 @@ const {
   updatePassword,
   forgotPassword,
   resetPassword,
-  logout,
-  googleCallback
+  logout
 } = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
 const { body } = require('express-validator');
@@ -41,24 +39,6 @@ router.post('/register', registerValidation, register);
 router.post('/login', loginValidation, login);
 router.post('/forgotpassword', forgotPassword);
 router.put('/resetpassword/:resettoken', resetPassword);
-
-// Google OAuth routes
-router.get(
-  '/google',
-  passport.authenticate('google', { 
-    scope: ['profile', 'email'],
-    session: false 
-  })
-);
-
-router.get(
-  '/google/callback',
-  passport.authenticate('google', { 
-    failureRedirect: `${process.env.CLIENT_URL}/login?error=google_auth_failed`,
-    session: false 
-  }),
-  googleCallback
-);
 
 // Protected routes
 router.get('/me', protect, getMe);

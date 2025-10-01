@@ -4,14 +4,10 @@ const helmet = require('helmet');
 const compression = require('compression');
 const morgan = require('morgan');
 const path = require('path');
-const passport = require('passport');
 require('dotenv').config();
 
 // Import database connection
 const connectDB = require('./config/database');
-
-// Import passport config
-require('./config/passport');
 
 // Import routes
 const authRoutes = require('./routes/auth');
@@ -58,9 +54,6 @@ app.use(
 // Body parsing
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Initialize Passport
-app.use(passport.initialize());
 
 // Static files
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));

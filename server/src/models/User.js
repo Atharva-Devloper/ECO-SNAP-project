@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 
 const userSchema = new mongoose.Schema({
   // Basic Info
@@ -16,25 +18,9 @@ const userSchema = new mongoose.Schema({
   
   password: {
     type: String,
-    required: function() {
-      // Password not required for OAuth users
-      return !this.googleId && !this.facebookId;
-    },
+    required: [true, 'Please add a password'],
     minlength: 6,
     select: false
-  },
-  
-  // OAuth IDs
-  googleId: {
-    type: String,
-    unique: true,
-    sparse: true
-  },
-  
-  facebookId: {
-    type: String,
-    unique: true,
-    sparse: true
   },
   
   userType: {

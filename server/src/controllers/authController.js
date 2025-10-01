@@ -320,21 +320,3 @@ exports.logout = async (req, res, next) => {
     data: {}
   });
 };
-
-// @desc    Google OAuth callback
-// @route   GET /api/auth/google/callback
-// @access  Public
-exports.googleCallback = async (req, res, next) => {
-  try {
-    // User is authenticated via passport
-    const user = req.user;
-    
-    // Generate JWT token
-    const token = user.getSignedJwtToken();
-    
-    // Redirect to frontend with token
-    res.redirect(`${process.env.CLIENT_URL}/auth/google/success?token=${token}`);
-  } catch (error) {
-    res.redirect(`${process.env.CLIENT_URL}/login?error=google_auth_failed`);
-  }
-};
