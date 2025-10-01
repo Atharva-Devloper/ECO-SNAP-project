@@ -4,10 +4,14 @@ const helmet = require('helmet');
 const compression = require('compression');
 const morgan = require('morgan');
 const path = require('path');
+const passport = require('passport');
 require('dotenv').config();
 
 // Import database connection
 const connectDB = require('./config/database');
+
+// Import passport config
+require('./config/passport');
 
 // Import routes
 const authRoutes = require('./routes/auth');
@@ -46,15 +50,17 @@ app.use(cors({
 
 // Compression middleware
 app.use(compression());
-
 // Logging middleware
 app.use(
   morgan(process.env.NODE_ENV === 'development' ? 'dev' : 'combined')
 );
 
-// Body parsing middleware
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+// Body parsing
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Initialize Passport
+app.use(passport.initialize());
 
 // Static files
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));

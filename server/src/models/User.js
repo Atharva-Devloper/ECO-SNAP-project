@@ -1,26 +1,42 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({
   // Basic Info
   email: {
     type: String,
-    required: [true, 'Email is required'],
+    required: [true, 'Please add an email'],
     unique: true,
     lowercase: true,
-    trim: true,
-    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email']
+    match: [
+      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+      'Please add a valid email'
+    ]
   },
   
   password: {
     type: String,
-    required: [true, 'Password is required'],
-    minlength: [6, 'Password must be at least 6 characters'],
-    select: false // Don't include password in queries by default
+    required: function() {
+      // Password not required for OAuth users
+      return !this.googleId && !this.facebookId;
+    },
+    minlength: 6,
+    select: false
   },
   
-  // User Type
+  // OAuth IDs
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true
+  },
+  
+  facebookId: {
+    type: String,
+    unique: true,
+    sparse: true
+  },
+  
   userType: {
     type: String,
     enum: ['citizen', 'organization', 'admin'],

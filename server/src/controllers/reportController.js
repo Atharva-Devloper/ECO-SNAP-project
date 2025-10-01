@@ -1,5 +1,6 @@
 const Report = require('../models/Report');
 const User = require('../models/User');
+const { notifyReportVerified, notifyReportAssigned } = require('../utils/notificationService');
 
 // @desc    Get all reports
 // @route   GET /api/reports
@@ -218,6 +219,16 @@ exports.verifyReport = async (req, res, next) => {
 
     await report.save();
 
+    // Send email notification to reporter
+    try {
+      const reporter = await User.findById(report.user);
+      if (reporter) {
+        await notifyReportVerified(reporter, report, report.pointsAwarded);
+      }
+    } catch (emailError) {
+      console.error('Error sending verification email:', emailError);
+    }
+
     res.status(200).json({
       success: true,
       message: 'Report verified successfully',
@@ -256,6 +267,13 @@ exports.assignReport = async (req, res, next) => {
     report.status = 'assigned';
 
     await report.save();
+
+    // Send email notification to organization
+    try {
+      await notifyReportAssigned(organization, report);
+    } catch (emailError) {
+      console.error('Error sending assignment email:', emailError);
+    }
 
     res.status(200).json({
       success: true,

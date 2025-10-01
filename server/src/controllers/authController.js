@@ -1,5 +1,7 @@
 const User = require('../models/User');
 const crypto = require('crypto');
+const sendEmail = require('../utils/sendEmail');
+const { welcomeEmail, resetPasswordEmail } = require('../utils/emailTemplates');
 
 // @desc    Register user
 // @route   POST /api/auth/register
@@ -35,6 +37,24 @@ exports.register = async (req, res, next) => {
 
     // Generate token
     const token = user.getSignedJwtToken();
+
+    // Send welcome email
+    try {
+      const userName = user.userType === 'citizen' 
+        ? user.profile.firstName 
+        : user.organization?.companyName || 'there';
+      
+      const emailContent = welcomeEmail(userName);
+      await sendEmail({
+        email: user.email,
+        subject: emailContent.subject,
+        message: emailContent.message,
+        html: emailContent.html
+      });
+    } catch (emailError) {
+      console.error('Error sending welcome email:', emailError);
+      // Don't fail registration if email fails
+    }
 
     res.status(201).json({
       success: true,
@@ -210,13 +230,40 @@ exports.forgotPassword = async (req, res, next) => {
 
     await user.save({ validateBeforeSave: false });
 
-    // In production, send email with reset link
-    // For now, return the token (remove in production!)
-    res.status(200).json({
-      success: true,
-      message: 'Password reset token generated',
-      resetToken: resetToken // Remove this in production!
-    });
+    // Create reset URL
+    const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
+
+    // Send password reset email
+    try {
+      const userName = user.userType === 'citizen' 
+        ? user.profile.firstName 
+        : user.organization?.companyName || 'there';
+      
+      const emailContent = resetPasswordEmail(resetUrl, userName);
+      await sendEmail({
+        email: user.email,
+        subject: emailContent.subject,
+        message: emailContent.message,
+        html: emailContent.html
+      });
+
+      res.status(200).json({
+        success: true,
+        message: 'Password reset email sent'
+      });
+    } catch (emailError) {
+      console.error('Error sending reset email:', emailError);
+      
+      // Rollback - remove reset token
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpire = undefined;
+      await user.save({ validateBeforeSave: false });
+
+      return res.status(500).json({
+        success: false,
+        message: 'Email could not be sent. Please try again later.'
+      });
+    }
   } catch (error) {
     next(error);
   }
@@ -272,4 +319,22 @@ exports.logout = async (req, res, next) => {
     message: 'Logged out successfully',
     data: {}
   });
+};
+
+// @desc    Google OAuth callback
+// @route   GET /api/auth/google/callback
+// @access  Public
+exports.googleCallback = async (req, res, next) => {
+  try {
+    // User is authenticated via passport
+    const user = req.user;
+    
+    // Generate JWT token
+    const token = user.getSignedJwtToken();
+    
+    // Redirect to frontend with token
+    res.redirect(`${process.env.CLIENT_URL}/auth/google/success?token=${token}`);
+  } catch (error) {
+    res.redirect(`${process.env.CLIENT_URL}/login?error=google_auth_failed`);
+  }
 };
