@@ -7,7 +7,7 @@ import { AuthProvider } from './context/AuthContext';
 // Import components (to be created)
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
-import LoadingSpinner from './components/common/LoadingSpinner';
+import LoadingSpinner from './components/common/LoadingSpinner'; 
 
 // Import pages
 // Public pages
@@ -18,6 +18,7 @@ import MunicipalSolutionsPage from './pages/public/MunicipalSolutionsPage';
 import PricingPage from './pages/public/PricingPage';
 import AboutPage from './pages/public/AboutPage';
 import ContactPage from './pages/public/ContactPage';
+import DemoPage from './pages/public/DemoPage';
 
 // Auth pages
 import LoginPage from './pages/auth/LoginPage';
@@ -66,7 +67,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Router>
-          <div className=\"App\">
+          <div className="App">
             <Header />
             <main className="main-content">
               <Routes>
@@ -78,6 +79,7 @@ function App() {
                 <Route path="/pricing" element={<PricingPage />} />
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/contact" element={<ContactPage />} />
+                <Route path="/demo" element={<DemoPage />} />
                 <Route path="/map" element={<MapPage />} />
                 
                 {/* Auth Routes */}
@@ -110,7 +112,7 @@ function App() {
             
             {/* Toast notifications */}
             <ToastContainer
-              position=\"top-right\"
+              position="top-right"
               autoClose={5000}
               hideProgressBar={false}
               newestOnTop={false}
@@ -119,7 +121,7 @@ function App() {
               pauseOnFocusLoss
               draggable
               pauseOnHover
-              theme=\"light\"
+              theme="light"
             />
           </div>
         </Router>

@@ -9,20 +9,29 @@ require('dotenv').config();
 // Import database connection
 const connectDB = require('./config/database');
 
-// Import routes (to be created)
-// const authRoutes = require('./routes/auth');
-// const reportRoutes = require('./routes/reports');
-// const userRoutes = require('./routes/users');
-// const statsRoutes = require('./routes/stats');
+// Import routes
+const authRoutes = require('./routes/auth');
+const reportRoutes = require('./routes/reports');
+const userRoutes = require('./routes/users');
+const statsRoutes = require('./routes/stats');
 
-// Import middleware (to be created)
-// const errorHandler = require('./middleware/errorHandler');
-// const notFound = require('./middleware/notFound');
+// Import middleware
+const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
 
-// Connect to database
-connectDB();
+// Connect to database with error handling
+(async () => {
+  try {
+    await connectDB();
+  } catch (err) {
+    console.error('❌ Failed to connect to database:', err.message);
+    process.exit(1);
+  }
+})();
+
+// Set default NODE_ENV if not set
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 // Security middleware
 app.use(helmet());
@@ -39,11 +48,9 @@ app.use(cors({
 app.use(compression());
 
 // Logging middleware
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
-} else {
-  app.use(morgan('combined'));
-}
+app.use(
+  morgan(process.env.NODE_ENV === 'development' ? 'dev' : 'combined')
+);
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
@@ -62,11 +69,11 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// API Routes (uncomment as routes are created)
-// app.use('/api/auth', authRoutes);
-// app.use('/api/reports', reportRoutes);
-// app.use('/api/users', userRoutes);
-// app.use('/api/stats', statsRoutes);
+// API Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/reports', reportRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/stats', statsRoutes);
 
 // Welcome route
 app.get('/api', (req, res) => {
@@ -84,27 +91,16 @@ app.get('/api', (req, res) => {
   });
 });
 
-// Error handling middleware (uncomment when created)
-// app.use(notFound);
-// app.use(errorHandler);
-
-// Default error handler for now
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({
-    success: false,
-    message: 'Something went wrong!',
-    error: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
-  });
-});
-
-// 404 handler for now
+// 404 handler
 app.use('*', (req, res) => {
   res.status(404).json({
     success: false,
     message: 'Route not found'
   });
 });
+
+// Error handling middleware (must be last)
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
